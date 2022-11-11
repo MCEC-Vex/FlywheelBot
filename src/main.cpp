@@ -2,9 +2,10 @@
 #include "pros/misc.h"
 #include <string>
 
+//test
 void opcontrol() {
     //DEFINITIONS
-	  // configure digital port 1 as an output
+	// configure digital port 1 as an output
   	 pros::ADIDigitalOut piston ('A');
     pros::Vision see(8);
     pros::Motor topmotor (3,true);
@@ -48,16 +49,17 @@ void opcontrol() {
 		}
     }
     }
+
     if(master.get_digital(DIGITAL_R2)){ //flywheel
         bottommotor.move_velocity(1111111120);
    	 	pros::delay(500);
     }
+
 	if(master.get_digital(DIGITAL_A)) { //piston
 		piston.set_value(false);
 		pros::delay(1000);
 		piston.set_value(true);
 	}
-
 
     }
  
