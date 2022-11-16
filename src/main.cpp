@@ -3,28 +3,13 @@
 #include <string>
 //testing code upload
 
-void initialize(){
-
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Mohammed");
-	pros::lcd::set_text(2, "Analog Sticks to Drive");
-	pros::lcd::set_text(3, "L1 - Slow down on turns");
-	pros::lcd::set_text(4, "R1 - Intake Motor");
-	pros::lcd::set_text(5, "R2 - Flywheel");
-	pros::lcd::set_text(6, "A - Shoot Disc");
-
-
-}
-
-
-void opcontrol() {
-    //DEFINITIONS
   	pros::ADIDigitalOut piston ('A'); 
     pros::Vision see(8);
 
     pros::Motor topbelt (2,true); //
     pros::Motor bottombelt(1,true); //
     pros::Motor flywheel (5, true); //flywheel
+	pros::Motor flywheeltwo (6, false);
 
     //Wheel motor ports
     pros::Motor topleft(12, false);
@@ -34,10 +19,28 @@ void opcontrol() {
 
 	bool intake = false;
 
-   
-
     int ymotion;
 	int xmotion;
+
+
+void initialize(){
+
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, "Mohammed");
+	pros::lcd::set_text(2, "Analog Sticks to Drive");
+	pros::lcd::set_text(3, "L1 - Slow down on turns");
+	pros::lcd::set_text(4, "R1 - Intake Motor");
+	pros::lcd::set_text(5, "R2 - Flywheel");
+	pros::lcd::set_text(6, "A - Shoot Disc");
+	
+}
+
+
+
+
+
+void opcontrol() {
+    //DEFINITIONS
 
     while(true){
 
@@ -79,13 +82,15 @@ void opcontrol() {
 
     if(master.get_digital(DIGITAL_R2)){ //runs flywheel while holding R2 down
         flywheel.move_velocity(999);
+		flywheeltwo.move_velocity(999);
     } else {
 		flywheel.move_velocity(0);
+		flywheeltwo.move_velocity(0);
 	}
 
 	if(master.get_digital(DIGITAL_A)) { //piston
 		piston.set_value(false);
-		pros::delay(500);
+		pros::delay(200);
 		piston.set_value(true);
 	}
 
