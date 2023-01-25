@@ -21,6 +21,7 @@ int xmotion;
 int Vision;
 int distread;
 int intakeV = 200;
+int reverseintakeV = -200;
 
 void initialize(){
 
@@ -129,6 +130,93 @@ pros::lcd::set_text(2, std::to_string(topleft.get_position()));
 
 
 
+//Control
+
+
+void R2_Flywheel()
+{
+
+        flywheel.move_velocity(flywheelV); //Changes flywheel velocity
+        flywheelbott.move_velocity(flywheelV);
+		pros::lcd::set_text(5, std::to_string(flywheel.get_actual_velocity()));
+		pros::lcd::set_text(6, std::to_string(flywheelbott.get_actual_velocity()));
+}
+
+
+void A_Piston()
+{
+		piston.set_value(false);
+		pros::delay(500);
+		piston.set_value(true);
+}
+
+void L1_Slowdown()
+{
+	
+
+			int right = (-xmotion + ymotion)/3; //-power + turn
+			int left = (xmotion + ymotion)/3; //power + turn
+
+			topleft.move(left);
+			bottleft.move(left);
+			bottright.move(right);
+			topright.move(right);
+
+			intakeV = 100;
+			
+
+}
+
+void UP_Flywheel()
+{
+	 
+		if (flywheelV == 150) {
+      pros::delay(500);
+			flywheelV = maxfly;
+      
+  
+		}
+
+		else if (flywheelV == 90) {
+       pros::delay(500);
+			flywheelV = 150;
+     
+      
+		}
+     pros::delay(10);
+
+}
+
+
+
+void DOWN_Flywheel()
+{
+	
+		
+		if (flywheelV == maxfly) {
+			      flywheelV = 150;
+      		pros::delay(1000);
+			
+
+		} 
+
+		else if (flywheelV == 150) {
+			
+			pros::delay(500);
+			flywheelV = 90;
+   
+		}
+
+}
+
+
+
+
+
+
+
+
+
 
 void opcontrol() {
     //DEFINITIONS
@@ -156,117 +244,56 @@ void opcontrol() {
 	topright.move(-right);
 	pros::delay(1);
 	////
-	
-    if(master.get_digital(DIGITAL_R1)){ //intake 
-		/*
-		if (intake == false) {
-		intake = true;
-        topbelt.move_velocity(120);
-        bottombelt.move_velocity(120);
-		}
-		if (intake == true) { //intake
-		intake = false;
-        topbelt.move_velocity(0);
-        bottombelt.move_velocity(0);
-		}
-		*/
+
+	if(master.get_digital(DIGITAL_R1)){ //intake 
 		topbelt.move_velocity(intakeV);
         bottombelt.move_velocity(intakeV);
 
     } else{
 		topbelt.move_velocity(0);
         bottombelt.move_velocity(0);}
-    
-
-    if(master.get_digital(DIGITAL_R2)){ //runs flywheel while holding R2 down
-
-        flywheel.move_velocity(flywheelV); //Changes flywheel velocity
-        flywheelbott.move_velocity(flywheelV);
-		pros::lcd::set_text(5, std::to_string(flywheel.get_actual_velocity()));
-		pros::lcd::set_text(6, std::to_string(flywheelbott.get_actual_velocity()));
 
 
+
+	if(master.get_digital(DIGITAL_R2)){ //runs flywheel while holding R2 down
+      R2_Flywheel();
 		} else {
 			flywheel.move_velocity(0);
 			flywheelbott.move_velocity(0);
 	}
 
+
 	if(master.get_digital(DIGITAL_A)) { //piston
-		piston.set_value(false);
-		pros::delay(500);
-		piston.set_value(true);
+		A_Piston();
 	}
+
 
 	// Slowdown feature (Cuts robots speed in half while holding down L1 on controller)
 	if(master.get_digital(DIGITAL_L1)) { 
-
-			int right = (-xmotion + ymotion)/3; //-power + turn
-			int left = (xmotion + ymotion)/3; //power + turn
-
-			topleft.move(left);
-			bottleft.move(left);
-			bottright.move(right);
-			topright.move(right);
-
-			intakeV = 100;
-			
-
+	L1_Slowdown();
 		} else { intakeV = 200;}
 
-	
-    if(master.get_digital(DIGITAL_UP)) {
+
+ if(master.get_digital(DIGITAL_UP)) {
       pros::lcd::set_text(6, std::to_string(flywheelV));
-		
-	/*	if (flywheelV == 200) {
-
-			flywheelV = 120;	
-			pros::delay(500);
-	  		flywheelV = 60;
-			//pros::delay(500);
-
-		} 
-*/
-		if (flywheelV == 150) {
-      pros::delay(500);
-			flywheelV = maxfly;
-      
-  
+		UP_Flywheel();
 		}
 
-		else if (flywheelV == 90) {
-       pros::delay(500);
-			flywheelV = 150;
-     
-      
-		}
-     pros::delay(10);
 
-		}
-
-	if(master.get_digital(DIGITAL_DOWN)) {
+if(master.get_digital(DIGITAL_DOWN)) {        //flywheel
     pros::lcd::set_text(6, std::to_string(flywheelV));
-		
-		if (flywheelV == maxfly) {
-			      flywheelV = 150;
-      		pros::delay(1000);
-			
-
-		} 
-
-		else if (flywheelV == 150) {
-			
-			pros::delay(500);
-			flywheelV = 90;
-   
-		}
-/*
-		if (flywheelV == 60) {
-			flywheelV = 200;
-      pros::delay(100);
-		} */
+		DOWN_Flywheel();
 	}
 
-	if(master.get_digital(DIGITAL_B)) {
+
+if(master.get_digital(DIGITAL_LEFT))  //reverse intake 
+	{
+		topbelt.move_velocity(reverseintakeV);
+        bottombelt.move_velocity(reverseintakeV);
+	}
+
+
+if(master.get_digital(DIGITAL_B)) {   //forwards roller
 		
 		roller.move_velocity(400);
 
@@ -274,8 +301,6 @@ void opcontrol() {
 			roller.move_velocity(0);
 		}
 
-	
 
 }
-
 }
