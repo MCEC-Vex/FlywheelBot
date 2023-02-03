@@ -109,7 +109,9 @@ topleft.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 
 //3535 encoder clicks to CENTER
 //Omni wheels are 4 inches in diameter: circumference is 12.566 inches, so 360 encoder clicks = 12.566 inches of movement (theoretically)
-topleft.move_absolute(-3535, 100); 
+
+//Move to position 
+topleft.move_absolute(-3535, 100);   
 topright.move_absolute(-3535, 100);
 bottleft.move_absolute(3535, 100);
 bottright.move_absolute(3535, 100);
@@ -121,10 +123,39 @@ pros::lcd::set_text(2, std::to_string(topleft.get_position()));
   }*/
 //pros::delay(2000);
 
-//Count();
+//Get motors ready to shoot 
+while(true)
+{
+	
+belt.move_velocity(100);
+pros::delay(500);
+flywheel.move_velocity(flywheelV);
+int velocity; 
+velocity = flywheel.get_actual_velocity();
+pros::delay(1000);
+pros::lcd::set_text(6,"Velocity:" + std::to_string(velocity));
+//pros::lcd::set_text(6,std::to_string(distread));
+pros::delay(500);
 
 
 
+if(velocity > 145 && velocity < 165 )   //range of speed for shooting 
+{
+{
+	int diskCount = 0; 
+	pros::lcd::set_text(3, "Count:" + std::to_string(diskCount));
+ for (diskCount = 0; diskCount <= 3 ; diskCount ++)   //will count every time piston is released 
+ {
+piston.set_value(false);
+pros::delay(500);
+piston.set_value(true);
+diskCount ++;
+pros::lcd::set_text(3, "Count:" + std::to_string(diskCount));
+
+ }
+}
+}
+}
 
 }
 
