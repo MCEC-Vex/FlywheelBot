@@ -101,27 +101,102 @@ void Count() {
 
 void autonomous()
 {
+	
+//move roller while moving forward
+roller.move_velocity(100);
+topleft.move_velocity(-50);
+topright.move_velocity(-50);
+bottleft.move_velocity(50);
+bottright.move_velocity(50);
+pros::delay(1000);
+topleft.move_velocity(0);
+topright.move_velocity(0);
+bottleft.move_velocity(0);
+bottright.move_velocity(0);
+roller.move_velocity(0);
+pros::delay(500);
+
+
+
+//clear position 
 topleft.tare_position();
 topright.tare_position();
 bottleft.tare_position();
 bottright.tare_position();
+
 topleft.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	pros::lcd::set_text(2, std::to_string(topleft.get_position()));
+		pros::lcd::set_text(3,std::to_string(topright.get_position()));
+		pros::lcd::set_text(4,std::to_string(bottleft.get_position()));
+		pros::lcd::set_text(5,std::to_string(bottright.get_position()));
 
 //3535 encoder clicks to CENTER
 //Omni wheels are 4 inches in diameter: circumference is 12.566 inches, so 360 encoder clicks = 12.566 inches of movement (theoretically)
 
-//Move to position 
-topleft.move_absolute(-3535, 100);   
-topright.move_absolute(-3535, 100);
-bottleft.move_absolute(3535, 100);
-bottright.move_absolute(3535, 100);
-pros::lcd::set_text(2, std::to_string(topleft.get_position()));
-//R.move_absolute(600, 100);// Moves 100 units forward
- /* while (!((topleft.get_position() < 605) && (topleft.get_position() > 595))) {
-    // Continue running this loop as long as the motor is not within +-5 units of its goal
-    pros::delay(2);
-  }*/
-//pros::delay(2000);
+//move straight 
+topleft.move_absolute(1827, 75);   
+topright.move_absolute(1580, 75);
+bottleft.move_absolute(-1816, 75);
+bottright.move_absolute(-1546, 75);
+pros::delay(2000);
+
+//clear
+topleft.tare_position();
+topright.tare_position();
+bottleft.tare_position();
+bottright.tare_position();
+
+//turn 
+topleft.move_absolute(675, 75);   
+topright.move_absolute(-488, 75);
+bottleft.move_absolute(-682, 75);
+bottright.move_absolute(557, 75);
+pros::delay(2000);
+
+//clear
+topleft.tare_position();
+topright.tare_position();
+bottleft.tare_position();
+bottright.tare_position();
+
+//move backwards towards roller 
+topleft.move_absolute(-1267, 75);   
+topright.move_absolute(-1538, 75);
+bottleft.move_absolute(1276, 75);
+bottright.move_absolute(1521, 75);
+pros::delay(2000);
+
+
+//clear
+topleft.tare_position();
+topright.tare_position();
+bottleft.tare_position();
+bottright.tare_position();
+
+
+//move roller while moving forward 
+roller.move_velocity(100);
+topleft.move_velocity(-50);
+topright.move_velocity(-50);
+bottleft.move_velocity(50);
+bottright.move_velocity(50);
+pros::delay(1000);
+topleft.move_velocity(0);
+topright.move_velocity(0);
+bottleft.move_velocity(0);
+bottright.move_velocity(0);
+roller.move_velocity(0);
+pros::delay(500);
+
+
+
+	
+	
+	
+	
+	
+	
+	
 
 //Get motors ready to shoot 
 while(true)
